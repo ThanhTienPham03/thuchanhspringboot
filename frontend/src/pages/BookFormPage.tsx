@@ -63,8 +63,8 @@ export default function BookFormPage() {
           }
           return next
         })
-      } catch {
-        setError('Không thể tải dữ liệu sách để chỉnh sửa.')
+      } catch (error) {
+        setError(buildErrorMessage('Không thể tải dữ liệu sách để chỉnh sửa.', error))
       } finally {
         setLoading(false)
       }
@@ -94,8 +94,8 @@ export default function BookFormPage() {
       }
 
       await navigate('/books')
-    } catch {
-      setError('Lưu thất bại. Vui lòng kiểm tra dữ liệu và thử lại.')
+    } catch (error) {
+      setError(buildErrorMessage('Lưu thất bại. Vui lòng kiểm tra dữ liệu và thử lại.', error))
     } finally {
       setSaving(false)
     }
@@ -170,4 +170,12 @@ export default function BookFormPage() {
       </div>
     </section>
   )
+}
+
+function buildErrorMessage(baseMessage: string, error: unknown): string {
+  if (error instanceof Error && error.message) {
+    return `${baseMessage} (${error.message})`
+  }
+
+  return baseMessage
 }

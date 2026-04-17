@@ -34,8 +34,8 @@ export default function BooksListPage() {
     try {
       const data = await booksApi.getBooks()
       setBooks(normalizeBooksResponse(data))
-    } catch {
-      setError('Không thể tải danh sách sách. Vui lòng kiểm tra backend.')
+    } catch (error) {
+      setError(buildErrorMessage('Không thể tải danh sách sách. Vui lòng kiểm tra backend.', error))
     } finally {
       setLoading(false)
     }
@@ -64,8 +64,8 @@ export default function BooksListPage() {
     try {
       await booksApi.deleteBook(id)
       await loadBooks()
-    } catch {
-      window.alert('Xóa thất bại. Vui lòng thử lại.')
+    } catch (error) {
+      setError(buildErrorMessage('Xóa thất bại. Vui lòng thử lại.', error))
     }
   }
 
@@ -194,4 +194,12 @@ export default function BooksListPage() {
       </div>
     </section>
   )
+}
+
+function buildErrorMessage(baseMessage: string, error: unknown): string {
+  if (error instanceof Error && error.message) {
+    return `${baseMessage} (${error.message})`
+  }
+
+  return baseMessage
 }
